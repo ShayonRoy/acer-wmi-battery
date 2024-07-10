@@ -50,6 +50,17 @@ time:
 sudo insmod acer-wmi-battery.ko enable_health_mode=1
 ```
 
+### Sticky Health Mode
+If you observe that health mode is turned off automatically after
+a few days and you don't want to reenable it manually you can create
+`/etc/modprobe.d/acer-wmi-battery.conf`  and add this line
+```
+options acer-wmi-battery enable_health_mode=1
+```
+If you want to temporarily turn off health mode for a few days you
+have to manually adjust the enable_health_mode option before and after
+the time you want to keep health mode disabled
+
 ### Calibration mode
 
 Before attempting the battery calibration, connect
@@ -89,7 +100,12 @@ chmod +x install.sh uninstall.sh
 sudo ./install.sh
 ```
 
-The driver will now automatically load at boot and be recompiled after a kernel upgrade. Reboot to use it.
+The driver will now automatically load at boot and be recompiled after a kernel upgrade. Reboot to use it. If it's the first time you're using a third party module with secure boot turned on
+follow onscreen instructions which will ask you to specify a password that you will reenter to
+enroller the MOK(Machine owner key) automatically created by dkms to sign the module for secure
+boot. If in any case you see(using lsmod for instance) that the acer_wmi_battery module is not
+loaded properly and running `modprobe acer-wmi-battery` shows a key error you might have to
+manually enroll /var/lib/shim-signed/mok/MOK.der using `mokutil --import <path>`
 
 ### Uninstallation
 In the cloned project directory execute:
